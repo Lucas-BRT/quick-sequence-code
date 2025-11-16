@@ -6,6 +6,5 @@ wasm-pack build ./qsc-generator \
     --out-dir ../pkg \
     --release
 
-
 echo "Running server..."
-cargo run -p server --release
+cargo run --release

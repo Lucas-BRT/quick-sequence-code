@@ -1,0 +1,7 @@
+services:
+  qsc-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "1919:1919"
