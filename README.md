@@ -15,9 +15,25 @@ Quick Sequence Code (or simply QSC) is a simple application for generating seque
 
 ## Build Command
 
+Run the following command to build the WebAssembly module and JavaScript bindings:
 
 ```shell
-wasm-pack build --target web --release
+wasm-pack build ./qsc-generator \
+    --target web \
+    --out-dir ../pkg \
+    --release
 ```
 
-the pkg directory will be created in the root directory of the project containing the compiled WebAssembly module and JavaScript bindings.
+The pkg directory will be created in the root directory of the project containing the compiled WebAssembly module and JavaScript bindings.
+
+Now you can run the web server to serve the application.
+
+```shell
+cargo run --release
+```
+
+Or you can simply run the script by typing:
+
+```shell
+chmod +x ./run.sh && ./run.sh
+```

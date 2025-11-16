@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Quick Sequence Code</title>
+    </head>
+    <body>
+        <h1 id="msg">Loading…</h1>
+        <input type="file" id="file-selector" />
+        <script type="module">
+            import init, { hello, process_file } from "./qsc_generator.js";
+
+            let selectedFile = null;
+
+            async function handleFileChange() {
+                const fileSelector = document.getElementById("file-selector");
+
+                if (!fileSelector) {
+                    console.error("File selector element not found");
+                    return;
+                }
+
+                fileSelector.addEventListener("change", async (event) => {
+                    const file = event.target.files[0];
+                    if (!file) {
+                        console.error("No file selected");
+                        return;
+                    }
+
+                    // Read the file as an ArrayBuffer
+                    const arrayBuffer = await file.arrayBuffer();
+
+                    const bytes = new Uint8Array(arrayBuffer);
+
+                    // send file to WASM to process
+                    const result = await process_file(bytes);
+                    console.log(result);
+                });
+            }
+
+            async function main() {
+                // setup wasm loader
+                await init();
+
+                // basic debug stuff
+                const msg_content = hello();
+                document.getElementById("msg").textContent = msg_content;
+
+                // event listeners
+                handleFileChange();
+            }
+
+            main();
+        </script>
+    </body>
+</html>
