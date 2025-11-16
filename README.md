@@ -5,6 +5,7 @@ Quick Sequence Code (or simply QSC) is a simple application for generating seque
 # References
 
 1. https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Rust_to_Wasm
+2. https://en.wikipedia.org/wiki/QR_code
 
 # Build Instructions
 

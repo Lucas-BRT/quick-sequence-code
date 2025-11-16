@@ -18,8 +18,5 @@ crate-type = ["cdylib"]
 [workspace]
 members = ["qsc-generator","server"]
 
-[profile.release]
-opt-level = "s"
-
 [build]
 target = "wasm32-unknown-unknown"

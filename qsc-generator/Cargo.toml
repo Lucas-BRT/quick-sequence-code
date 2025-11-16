@@ -9,3 +9,6 @@ web-sys = { workspace = true }
 
 [lib]
 crate-type = ["cdylib"]
+
+[profile.release]
+opt-level = "s"
