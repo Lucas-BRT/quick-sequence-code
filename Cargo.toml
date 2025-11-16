@@ -1,7 +1,6 @@
-[package]
-name = "quick-sequence-code"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+members = ["qsc-generator","server"]
+resolver = "3"
 
 [workspace.dependencies]
 wasm-bindgen = "0.2.105"
@@ -11,12 +10,3 @@ tokio = { version = "1.48.0", features = ["full"] }
 tower = "0.5.2"
 tower-http = { version = "0.6.6", features = ["fs"] }
 web-sys = { version = "0.3.82", features = ["console"] }
-
-[lib]
-crate-type = ["cdylib"]
-
-[workspace]
-members = ["qsc-generator","server"]
-
-[build]
-target = "wasm32-unknown-unknown"
