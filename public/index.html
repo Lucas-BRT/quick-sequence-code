@@ -7,6 +7,12 @@
     <body>
         <h1 id="msg">Loading…</h1>
         <input type="file" id="file-selector" />
+        <canvas
+            id="my-canvas"
+            width="25"
+            height="25"
+            style="image-rendering: pixelated"
+        ></canvas>
         <script type="module">
             import init, { hello, process_file } from "./qsc_generator.js";
 
@@ -34,7 +40,32 @@
 
                     // send file to WASM to process
                     const result = await process_file(bytes);
-                    console.log(result);
+
+                    const canvas = document.getElementById("my-canvas");
+                    if (!canvas) {
+                        console.error("Canvas element not found");
+                        return;
+                    }
+
+                    const ctx = canvas.getContext("2d");
+                    ctx.imageSmoothingEnabled = false;
+                    const width = canvas.width;
+                    const height = canvas.height;
+
+                    // Render based on the boolean array
+                    for (let y = 0; y < height; y++) {
+                        for (let x = 0; x < width; x++) {
+                            const index = y * width + x;
+                            if (index < result.length) {
+                                const value = result[index];
+                                ctx.fillStyle = value ? "black" : "white";
+                                ctx.fillRect(x, y, 1, 1);
+                            }
+                        }
+                    }
+
+                    // upscale the canvas for better visibility
+                    canvas.style.width = width * 10 + "px";
                 });
             }
 
