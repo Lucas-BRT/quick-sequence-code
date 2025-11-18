@@ -1,0 +1,15 @@
+{
+  "name": "qsc-generator",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "qsc_generator_bg.wasm",
+    "qsc_generator.js",
+    "qsc_generator.d.ts"
+  ],
+  "main": "qsc_generator.js",
+  "types": "qsc_generator.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
