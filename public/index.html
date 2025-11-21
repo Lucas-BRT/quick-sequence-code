@@ -2,86 +2,23 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Quick Sequence Code</title>
+        <link rel="stylesheet" href="./style.css" />
     </head>
     <body>
-        <h1 id="msg">Loading…</h1>
-        <input type="file" id="file-selector" />
-        <canvas
-            id="my-canvas"
-            width="25"
-            height="25"
-            style="image-rendering: pixelated"
-        ></canvas>
-        <script type="module">
-            import init, { hello, process_file } from "./qsc_generator.js";
+        <div class="main-container">
+            <h1 id="msg" class="loading">Loading…</h1>
 
-            let selectedFile = null;
+            <div class="divider"></div>
 
-            async function handleFileChange() {
-                const fileSelector = document.getElementById("file-selector");
+            <div class="file-input-container">
+                <input type="file" id="file-selector" accept="*/*" />
+            </div>
 
-                if (!fileSelector) {
-                    console.error("File selector element not found");
-                    return;
-                }
+            <div id="canvas-container"></div>
+        </div>
 
-                fileSelector.addEventListener("change", async (event) => {
-                    const file = event.target.files[0];
-                    if (!file) {
-                        console.error("No file selected");
-                        return;
-                    }
-
-                    // Read the file as an ArrayBuffer
-                    const arrayBuffer = await file.arrayBuffer();
-
-                    const bytes = new Uint8Array(arrayBuffer);
-
-                    // send file to WASM to process
-                    const result = await process_file(bytes);
-
-                    const canvas = document.getElementById("my-canvas");
-                    if (!canvas) {
-                        console.error("Canvas element not found");
-                        return;
-                    }
-
-                    const ctx = canvas.getContext("2d");
-                    ctx.imageSmoothingEnabled = false;
-                    const width = canvas.width;
-                    const height = canvas.height;
-
-                    // Render based on the boolean array
-                    for (let y = 0; y < height; y++) {
-                        for (let x = 0; x < width; x++) {
-                            const index = y * width + x;
-                            if (index < result.length) {
-                                const value = result[index];
-                                ctx.fillStyle = value ? "black" : "white";
-                                ctx.fillRect(x, y, 1, 1);
-                            }
-                        }
-                    }
-
-                    // upscale the canvas for better visibility
-                    canvas.style.width = width * 10 + "px";
-                });
-            }
-
-            async function main() {
-                // setup wasm loader
-                await init();
-
-                // basic debug stuff
-                const msg_content = hello();
-                document.getElementById("msg").textContent = msg_content;
-
-                // event listeners
-                handleFileChange();
-            }
-
-            main();
-        </script>
+        <script type="module" src="./main.js"></script>
     </body>
 </html>

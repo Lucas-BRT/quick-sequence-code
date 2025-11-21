@@ -6,7 +6,12 @@ edition = "2024"
 [dependencies]
 qrcode = { workspace = true }
 wasm-bindgen = { workspace = true }
+js-sys = "0.3.70"
+console_error_panic_hook = { version = "0.1.7", optional = true }
 web-sys = { workspace = true }
+
+[features]
+default = ["console_error_panic_hook"]
 
 [lib]
 crate-type = ["cdylib"]

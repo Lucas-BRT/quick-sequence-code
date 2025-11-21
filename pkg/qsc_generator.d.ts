@@ -1,18 +1,24 @@
 /* tslint:disable */
 /* eslint-disable */
-export function process_file(file: Uint8Array): boolean[];
-export function hello(): string;
+export function main(): void;
+export function init_app(): void;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly hello: () => [number, number];
-  readonly process_file: (a: number, b: number) => [number, number];
-  readonly __wbindgen_externrefs: WebAssembly.Table;
+  readonly main: () => void;
+  readonly init_app: () => [number, number];
+  readonly wasm_bindgen__convert__closures_____invoke__h05d7dd3e0d2839d5: (a: number, b: number) => void;
+  readonly wasm_bindgen__closure__destroy__h661c006b9810bf33: (a: number, b: number) => void;
+  readonly wasm_bindgen__convert__closures_____invoke__h0cd7c2b8ff763447: (a: number, b: number, c: any) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
-  readonly __externref_drop_slice: (a: number, b: number) => void;
+  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+  readonly __wbindgen_exn_store: (a: number) => void;
+  readonly __externref_table_alloc: () => number;
+  readonly __wbindgen_externrefs: WebAssembly.Table;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
+  readonly __externref_table_dealloc: (a: number) => void;
   readonly __wbindgen_start: () => void;
 }
 
