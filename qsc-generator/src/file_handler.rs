@@ -1,8 +1,9 @@
-use crate::constants::DEFAULT_QRCODE_MAX_DATA_CAPACITY;
 use crate::dom::show_error_state;
 use crate::dom::{clear_container, create_canvas, show_loading_state};
+use crate::qrcode::{get_max_qr_capacity, render_qrcode_canvas};
 use crate::utils::get_document;
 use js_sys::{ArrayBuffer, Uint8Array};
+use std::sync::Arc;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
 use web_sys::{Event, File, FileReader, console, window};
@@ -13,19 +14,29 @@ pub fn log_file_info(file_name: &str, file_size: usize) {
 
 pub fn create_canvas_sequence(data: &[u8]) -> Result<(), JsValue> {
     let file_size = data.len();
-    let canvas_count = file_size.div_ceil(DEFAULT_QRCODE_MAX_DATA_CAPACITY);
+    let max_capacity = get_max_qr_capacity();
+    console::log_1(&format!("Detected max QR capacity: {} bytes", max_capacity).into());
+
+    let canvas_count = file_size.div_ceil(max_capacity);
     console::log_1(&format!("canvas_count: {}", canvas_count).into());
 
     clear_container("canvas-container")?;
 
-    create_canvas_async(0, canvas_count)?;
+    let data_arc = Arc::new(data.to_vec());
+
+    create_canvas_async(0, canvas_count, data_arc, max_capacity)?;
 
     Ok(())
 }
 
-fn create_canvas_async(index: usize, total: usize) -> Result<(), JsValue> {
+fn create_canvas_async(
+    index: usize,
+    total: usize,
+    data: Arc<Vec<u8>>,
+    max_capacity: usize,
+) -> Result<(), JsValue> {
     if index >= total {
-        console::log_1(&"All canvas elements created".into());
+        console::log_1(&"All canvas elements created and rendered".into());
         return Ok(());
     }
 
@@ -34,18 +45,76 @@ fn create_canvas_async(index: usize, total: usize) -> Result<(), JsValue> {
         .get_element_by_id("canvas-container")
         .ok_or("Canvas container not found")?;
 
-    let canvas = create_canvas(&format!("canvas-{}", index), None, None, None)?;
-    container.append_child(&canvas)?;
+    let canvas_id = format!("canvas-{}", index);
+    console::log_1(&format!("Creating canvas with ID: {}", canvas_id).into());
 
+    let canvas = create_canvas(&canvas_id, None, None, None)?;
+    console::log_1(&format!("Canvas created successfully: {}", canvas_id).into());
+
+    container.append_child(&canvas)?;
+    console::log_1(&format!("Canvas appended to DOM: {}", canvas_id).into());
+
+    let chunk_start = index * max_capacity;
+    let chunk_end = ((index + 1) * max_capacity).min(data.len());
+    let mut chunk_data = &data[chunk_start..chunk_end];
+
+    if chunk_data.len() > max_capacity {
+        chunk_data = &chunk_data[..max_capacity];
+    }
+
+    console::log_1(
+        &format!(
+            "Canvas {}: chunk_start={}, chunk_end={}, chunk_size={}, max_capacity={}",
+            index,
+            chunk_start,
+            chunk_end,
+            chunk_data.len(),
+            max_capacity
+        )
+        .into(),
+    );
+
+    match render_qrcode_canvas(&canvas_id, chunk_data) {
+        Ok(_) => {
+            console::log_1(&format!("Canvas {} rendered successfully", index).into());
+        }
+        Err(e) => {
+            console::error_1(&format!("Failed to render canvas {}: {:?}", index, e).into());
+        }
+    }
+
+    console::log_1(&format!("Setting timeout for next canvas {}", index + 1).into());
+
+    let data_for_closure = Arc::clone(&data);
     let closure = Closure::wrap(Box::new(move || {
-        let _ = create_canvas_async(index + 1, total);
+        console::log_1(&format!("Timeout triggered for canvas {}", index + 1).into());
+        match create_canvas_async(
+            index + 1,
+            total,
+            Arc::clone(&data_for_closure),
+            max_capacity,
+        ) {
+            Ok(_) => {
+                console::log_1(&format!("Successfully processed canvas {}", index + 1).into());
+            }
+            Err(e) => {
+                console::error_1(&format!("Error in canvas {}: {:?}", index + 1, e).into());
+            }
+        }
     }) as Box<dyn FnMut()>);
 
     let window = window().ok_or("No global window exists")?;
-    window.set_timeout_with_callback_and_timeout_and_arguments_0(
-        closure.as_ref().unchecked_ref(),
-        10,
-    )?;
+    match window
+        .set_timeout_with_callback_and_timeout_and_arguments_0(closure.as_ref().unchecked_ref(), 10)
+    {
+        Ok(_) => {
+            console::log_1(&format!("Timeout set successfully for canvas {}", index + 1).into());
+        }
+        Err(e) => {
+            console::error_1(&format!("Failed to set timeout: {:?}", e).into());
+            return Err(e);
+        }
+    }
     closure.forget();
 
     Ok(())
