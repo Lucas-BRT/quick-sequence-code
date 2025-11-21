@@ -20,6 +20,9 @@
 }
 
 body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     font-family: "Courier New", monospace;
     background-color: var(--bg-primary);
     color: var(--text-primary);
@@ -271,6 +274,7 @@ canvas * {
 
 /* Container layout */
 .main-container {
+    width: 80%;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -432,4 +436,59 @@ canvas * {
 
 .status-indicator.error {
     background-color: #ff0000;
+}
+
+/* Footer styles */
+.footer {
+    margin-top: 4rem;
+    padding: 2rem;
+    background-color: var(--bg-secondary);
+    border: 4px solid var(--border-color);
+    box-shadow: 8px 8px 0px var(--shadow-dark);
+    text-align: center;
+    position: relative;
+}
+
+.footer::before {
+    content: "INFO";
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    background-color: var(--bg-primary);
+    color: var(--accent-orange);
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 0 1rem;
+    letter-spacing: 0.1em;
+}
+
+.footer p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+}
+
+.footer a {
+    color: var(--accent-orange);
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.2rem 0.5rem;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.footer a:hover {
+    color: var(--bg-primary);
+    background-color: var(--accent-orange);
+    border-color: var(--accent-orange-dark);
+    box-shadow: 2px 2px 0px var(--accent-orange-dark);
+    transform: translate(-1px, -1px);
+}
+
+.footer a:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
 }
