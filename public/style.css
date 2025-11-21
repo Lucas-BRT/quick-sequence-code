@@ -144,7 +144,12 @@ h1::after {
     box-shadow: 8px 8px 0px var(--shadow-dark);
     min-height: 200px;
     position: relative;
+    /* Enhanced pixelated rendering */
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
     transition: all 0.3s ease;
     display: flex;
     flex-wrap: wrap;
@@ -187,6 +192,12 @@ canvas {
     transition: all 0.2s ease;
     opacity: 0;
     animation: canvas-appear 0.5s ease-out forwards;
+    /* Remove antialiasing and make pixelated */
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
 }
 
 @keyframes canvas-appear {
@@ -203,6 +214,16 @@ canvas {
 canvas:hover {
     transform: translate(-2px, -2px);
     box-shadow: 8px 8px 0px var(--accent-orange-dark);
+}
+
+/* Prevent smooth scaling and ensure pixelated rendering */
+canvas,
+canvas * {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
 }
 
 /* Loading state */
