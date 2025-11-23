@@ -1,3 +1,8 @@
+[![MIT licensed][mit-badge]][mit-url]
+
+[mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[mit-url]: https://github.com/Lucas-BRT/quick-sequence-code/blob/main/LICENSE
+
 # Quick Sequence Code
 
 Quick Sequence Code (or simply QSC) is a simple application for generating sequences of QR codes from any file.
@@ -11,7 +16,7 @@ Quick Sequence Code (or simply QSC) is a simple application for generating seque
 
 ## Prerequisites
 
-- Rust >= 1.91.0
+- Rust >= 1.88.0
 - Wasm-pack >= 0.13.1
 
 ## Build Command
